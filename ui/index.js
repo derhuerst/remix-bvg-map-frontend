@@ -2,67 +2,57 @@
 
 const css = require('sheetify')
 const h = require('virtual-dom/h')
-const svg = require('virtual-dom/virtual-hyperscript/svg')
-const renderMap = require('bvg-topological-map/render')
+
+const renderMap = require('./map')
 
 const prefix = css `
 :host {
-	/*height: 100%;
-	text-align: center;
+	height: 100%;
 	display: flex;
-	align-items: stretch;
-	justify-content: center;*/
+	flex-direction: column;
+	justify-content: center;
+}
+
+:host .bar {
+	background-color: #fff;
+	border-bottom: 1px solid #c0c0c0;
+}
+
+:host .map {
 	overflow: scroll;
-}
-
-:host #stations .station {
-	cursor: pointer;
-}
-
-:host #selection {
-	fill: none;
-	stroke-width: 3;
-	stroke: #3498db;
 }
 `
 
-const renderSelection = (state) => {
+const renderForm = (state, actions) => {
 	if (!state.selection.id) return null
-	return svg('circle', {
-		id: 'selection',
-		r: 10,
-		cx: state.selection.x,
-		cy: state.selection.y
-	})
+	const id = state.selection.id
+	return [
+		h('input', {
+			type: 'text',
+			value: state.stations[id] || '',
+			placeholder: 'type a name'
+		}),
+		h('button', {
+			type: 'submit',
+			'ev-click': (ev) => {
+				const input = ev.target.parentNode.querySelector('input')
+				actions.map(id, input.value.trim())
+			}
+		}, '✔︎')
+	]
 }
 
 const render = (state, actions) => {
-	const rootProps = (h, opt, data) => {
-		const props = renderMap.defaults.rootProps(h, opt, data)
-		if (!props.style) props.style = {}
-		props.style.width = (data.width * 2) + 'px'
-		props.style.height = (data.height * 2) + 'px'
-		return props
+	if (state.loading) {
+		return h('span', {}, 'loading some data.')
 	}
-	const stationProps = (h, id, station) => {
-		const props = renderMap.defaults.stationProps(h, id, station)
-		props['ev-click'] = () => actions.select(id)
-		return props
-	}
+	// todo: render error modal
 
-	const topLayer = (h, opt, data) => [
-		renderSelection(state)
-		// todo
-	]
-
-	return h('div', {
-		className: prefix
-	}, [
-		renderMap(svg, {
-			rootProps,
-			stationProps,
-			topLayer
-		})
+	return h('div', {className: prefix}, [
+		h('div', {className: 'bar'}, renderForm(state, actions)),
+		h('div', {className: 'map'}, [
+			renderMap(state, actions)
+		])
 	])
 }
 

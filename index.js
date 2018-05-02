@@ -10,6 +10,7 @@ const positions = require('./lib/station-positions')
 const render = require('./ui')
 
 const state = {
+	loading: true,
 	stations: {},
 	selection: {
 		id: null,
@@ -30,9 +31,42 @@ const select = (id) => {
 	rerender()
 }
 
-const actions = {
-	select
+const map = (id, caption) => {
+	state.stations[id] = caption
+	rerender()
 }
+
+const actions = {
+	select,
+	map
+}
+
+setTimeout(() => {
+	const remixFromId = location.hash.slice(1)
+	if (remixFromId) {
+		console.info('loading remix ' + remixFromId)
+		fetch(`/${remixFromId}.json`, {
+			headers: {
+				accept: 'application/json'
+			}
+		})
+		.then((res) => {
+			if (!res.ok) {
+				console.log(res)
+			}
+			return res.json()
+		})
+		.then((remix) => {
+			state.stations = remix.stations || {}
+			state.loading = false
+			rerender()
+		})
+		.catch(console.error) // todo: handle err
+	} else {
+		state.loading = false
+		rerender()
+	}
+})
 
 let tree = render(state, actions)
 let root = createElement(tree)
