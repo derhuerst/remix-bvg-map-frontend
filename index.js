@@ -14,13 +14,13 @@ const id = localStorage.getItem('id')
 const state = {
 	id: id || null,
 	secret: id && localStorage.getItem('secret:' + id) || null,
-	loading: true,
 	stations: {},
 	selection: {
 		id: null,
 		x: null,
 		y: null
-	}
+	},
+	loading: false
 }
 
 const select = (stationId) => {
@@ -44,8 +44,12 @@ const map = (stationId, caption) => {
 const read = (id) => {
 	// todo: status flag
 	console.info('reading remix ' + id)
+	state.loading = true
+	rerender()
+
 	return fetchFromBackend(`/${id}.json`)
 	.then((remix) => {
+		state.loading = false
 		state.stations = remix.stations || {}
 		rerender()
 	})
@@ -55,6 +59,9 @@ const read = (id) => {
 const create = () => {
 	// todo: status flag
 	console.info('creating remix')
+	state.loading = true
+	rerender()
+
 	fetchFromBackend('/', {
 		method: 'POST',
 		headers: {
@@ -63,6 +70,7 @@ const create = () => {
 		body: JSON.stringify({stations: state.stations})
 	})
 	.then(({id, secret}) => {
+		state.loading = false
 		localStorage.setItem('id', id)
 		localStorage.setItem('secret:' + id, secret)
 		state.id = id
@@ -86,6 +94,9 @@ const write = () => {
 
 	// todo: status flag
 	console.info('writing remix')
+	state.loading = true
+	rerender()
+
 	fetchFromBackend('/' + state.id, {
 		method: 'PATCH',
 		headers: {
@@ -93,6 +104,10 @@ const write = () => {
 			'X-Secret': state.secret
 		},
 		body: JSON.stringify({stations: state.stations})
+	})
+	.then(() => {
+		state.loading = false
+		rerender()
 	})
 	.catch(console.error) // todo: handle err
 }
@@ -108,19 +123,11 @@ const actions = {
 setTimeout(() => {
 	const id = state.id || location.hash.slice(1)
 	const fromRemix = !!location.hash.slice(1)
+	if (!id) return null // nothing to do
 
-	if (id) {
-		read(id)
-		.then(() => {
-			console.log('done!')
-			if (fromRemix) location.hash = ''
-			state.loading = false
-			rerender()
-		})
-	} else {
-		state.loading = false
-		rerender()
-	}
+	read(id).then(() => {
+		if (fromRemix) location.hash = ''
+	})
 })
 
 let tree = render(state, actions)

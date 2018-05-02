@@ -2,6 +2,7 @@
 
 const css = require('sheetify')
 const h = require('virtual-dom/h')
+const renderLoader = require('virtual-loading-dots').render
 
 const renderMap = require('./map')
 
@@ -14,6 +15,7 @@ const prefix = css `
 }
 
 :host .bar {
+	position: relative;
 	padding: .3rem .5rem;
 	min-height: 3rem;
 	background-color: #fff;
@@ -24,8 +26,16 @@ const prefix = css `
 	overflow: scroll;
 }
 
-:host #id {
+:host .remix-id {
 	display: inline-block;
+}
+
+:host .loader {
+	position: absolute;
+	top: 1rem;
+	left: 50%;
+	width: 3rem;
+	height: 1rem;
 }
 `
 
@@ -49,14 +59,24 @@ const renderForm = (state, actions) => {
 	])
 }
 
+const loader = renderLoader(h, {color: '#777'})
+
 const render = (state, actions) => {
-	if (state.loading) {
-		return h('span', {}, 'loading some data.')
-	}
 	// todo: render error modal
+
+	let idLabel = null
+	if (state.id) {
+		idLabel = h('code', {className: 'remix-id'}, state.id)
+	}
+
+	let loadingIndicator = null
+	if (state.loading) {
+		loadingIndicator = h('div', {className: 'loader'}, [loader])
+	}
 
 	const saveBtn = h('button', {
 		type: 'submit',
+		disabled: state.loading,
 		'ev-click': state.id && state.secret
 			? () => actions.write()
 			: () => actions.create()
@@ -72,10 +92,11 @@ const render = (state, actions) => {
 
 	return h('div', {className: prefix}, [
 		h('div', {className: 'bar'}, [
-			state.id ? h('code', {id: 'id'}, state.id) : null,
 			renderForm(state, actions),
+			idLabel,
+			loadingIndicator,
 			saveBtn,
-			previewBtn
+			previewBtn,
 		]),
 		h('div', {className: 'map'}, [
 			renderMap(state, actions)
