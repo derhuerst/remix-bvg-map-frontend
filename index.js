@@ -33,6 +33,7 @@ const select = (id) => {
 
 const map = (id, caption) => {
 	state.stations[id] = caption
+	state.selection.id = state.selection.x = state.selection.y = null
 	rerender()
 }
 

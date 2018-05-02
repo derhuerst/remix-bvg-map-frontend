@@ -8,6 +8,10 @@ const renderMap = require('bvg-topological-map/render')
 const createRenderRemix = require('../lib/render-remix')
 
 const prefix = css `
+:host {
+	margin: 1rem;
+}
+
 :host #stations .station {
 	cursor: pointer;
 }
@@ -20,7 +24,7 @@ const prefix = css `
 
 :host .remix {
 	font-family: sans-serif;
-	font-size: 100%;
+	font-size: 70%;
 }
 `
 

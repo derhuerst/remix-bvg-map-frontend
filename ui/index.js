@@ -14,6 +14,8 @@ const prefix = css `
 }
 
 :host .bar {
+	padding: .3rem .5rem;
+	min-height: 3rem;
 	background-color: #fff;
 	border-bottom: 1px solid #c0c0c0;
 }
@@ -30,7 +32,8 @@ const renderForm = (state, actions) => {
 		h('input', {
 			type: 'text',
 			value: state.stations[id] || '',
-			placeholder: 'type a name'
+			placeholder: 'type a name',
+			autofocus: true
 		}),
 		h('button', {
 			type: 'submit',

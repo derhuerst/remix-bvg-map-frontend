@@ -42,7 +42,7 @@
 	},
 	"scripts": {
 		"build:dev": "env NODE_ENV=dev browserify --debug -g envify -t sheetify -p [ css-extract -o dist/bundle.css ] index.js > dist/bundle.js",
-		"build": "env NODE_ENV=production browserify -p common-shakeify -g [babelify --presets env --ignore '/node_modules\\/virtual-dom/'] -t sheetify/transform -p [ css-extract -o dist/bundle.css ] -g envify -g uglifyify index.js | uglifyjs -mc > dist/bundle.js",
+		"build": "env NODE_ENV=production browserify -p common-shakeify -g [babelify --presets env --ignore '/node_modules\\/virtual-dom/' --ignore '/node_modules/cuid/'] -t sheetify/transform -p [ css-extract -o dist/bundle.css ] -g envify -g uglifyify index.js | uglifyjs -mc > dist/bundle.js",
 		"prepublishOnly": "npm run build"
 	}
 }
