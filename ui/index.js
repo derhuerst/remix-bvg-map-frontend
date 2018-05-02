@@ -23,12 +23,16 @@ const prefix = css `
 :host .map {
 	overflow: scroll;
 }
+
+:host #id {
+	display: inline-block;
+}
 `
 
 const renderForm = (state, actions) => {
 	if (!state.selection.id) return null
 	const id = state.selection.id
-	return [
+	return h('div', {}, [
 		h('input', {
 			type: 'text',
 			value: state.stations[id] || '',
@@ -42,7 +46,7 @@ const renderForm = (state, actions) => {
 				actions.map(id, input.value.trim())
 			}
 		}, '✔︎')
-	]
+	])
 }
 
 const render = (state, actions) => {
@@ -51,8 +55,19 @@ const render = (state, actions) => {
 	}
 	// todo: render error modal
 
+	const saveBtn = h('button', {
+		type: 'submit',
+		'ev-click': state.id && state.secret
+			? () => actions.write()
+			: () => actions.create()
+	}, state.id && state.secret ? 'save changes' : 'create remix')
+
 	return h('div', {className: prefix}, [
-		h('div', {className: 'bar'}, renderForm(state, actions)),
+		h('div', {className: 'bar'}, [
+			state.id ? h('code', {id: 'id'}, state.id) : null,
+			renderForm(state, actions),
+			saveBtn
+		]),
 		h('div', {className: 'map'}, [
 			renderMap(state, actions)
 		])
