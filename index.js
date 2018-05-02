@@ -44,10 +44,9 @@ const map = (stationId, caption) => {
 const read = (id) => {
 	// todo: status flag
 	console.info('reading remix ' + id)
-	fetchFromBackend(`/${id}.json`)
+	return fetchFromBackend(`/${id}.json`)
 	.then((remix) => {
 		state.stations = remix.stations || {}
-		state.loading = false
 		rerender()
 	})
 	.catch(console.error) // todo: handle err
@@ -108,8 +107,17 @@ const actions = {
 
 setTimeout(() => {
 	const id = state.id || location.hash.slice(1)
-	if (id) read(id)
-	else {
+	const fromRemix = !!location.hash.slice(1)
+
+	if (id) {
+		read(id)
+		.then(() => {
+			console.log('done!')
+			if (fromRemix) location.hash = ''
+			state.loading = false
+			rerender()
+		})
+	} else {
 		state.loading = false
 		rerender()
 	}

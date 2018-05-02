@@ -62,11 +62,20 @@ const render = (state, actions) => {
 			: () => actions.create()
 	}, state.id && state.secret ? 'save changes' : 'create remix')
 
+	let previewBtn = null
+	if (state.id) {
+		previewBtn = h('a', {
+			className: 'button',
+			href: `/${state.id}.svg`
+		}, 'preview')
+	}
+
 	return h('div', {className: prefix}, [
 		h('div', {className: 'bar'}, [
 			state.id ? h('code', {id: 'id'}, state.id) : null,
 			renderForm(state, actions),
-			saveBtn
+			saveBtn,
+			previewBtn
 		]),
 		h('div', {className: 'map'}, [
 			renderMap(state, actions)

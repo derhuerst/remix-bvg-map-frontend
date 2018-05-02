@@ -22,13 +22,15 @@
 			}
 
 			input,
-			button {
+			button,
+			a.button {
 				margin: 0 .1em;
 				padding: .3em .5em;
 				display: inline-block;
-				font-size: 92%;
+				font-size: inherit;
 				box-sizing: border-box;
 				border-radius: .2em;
+				line-height: 1.2;
 			}
 			input {
 				border: 1px solid #ccc;
@@ -37,19 +39,24 @@
 				outline: none;
 				border-color: #3498db;
 			}
+			a.button {
+				text-decoration: none;
+				font-size: inherit;
+			}
 
-			button {
+			button,
+			a.button {
 				color: white;
 				cursor: pointer;
 				background-color: #2980b9;
 				border: none;
 			}
-			button:hover,
-			button:focus {
+			button:hover, a.button:hover,
+			button:focus, a.button:focus {
 				background-color: #3498db;
 				outline: none;
 			}
-			button:active {
+			button:active, a.button:active {
 				background-color: #1970a9;
 			}
 		</style>
