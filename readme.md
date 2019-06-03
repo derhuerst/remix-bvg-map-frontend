@@ -1,6 +1,6 @@
 # remix-bvg-map-frontend
 
-**A website that allows you to remix the BVG transit map.**
+**A website that allows you to remix the BVG transit map.** Checkout [the backend](https://github.com/derhuerst/remix-bvg-map-backend)!
 
 [![npm version](https://img.shields.io/npm/v/remix-bvg-map-frontend.svg)](https://www.npmjs.com/package/remix-bvg-map-frontend)
 ![ISC-licensed](https://img.shields.io/github/license/derhuerst/remix-bvg-map-frontend.svg)
