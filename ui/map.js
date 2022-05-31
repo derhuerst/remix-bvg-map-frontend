@@ -1,7 +1,6 @@
 'use strict'
 
 const css = require('sheetify')
-const h = require('virtual-dom/h')
 const svg = require('virtual-dom/virtual-hyperscript/svg')
 const renderMap = require('bvg-topological-map/render')
 
