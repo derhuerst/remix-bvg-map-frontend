@@ -1,7 +1,7 @@
 {
 	"name": "remix-bvg-map-frontend",
 	"description": "A website that allows you to remix the BVG transit map.",
-	"version": "0.1.2",
+	"version": "1.0.0",
 	"files": [
 		"index.js",
 		"lib",
